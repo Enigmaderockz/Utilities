@@ -43,14 +43,16 @@ class DataMasker:
                 first_name = random.choice(self.first_names)
                 last_name = random.choice(self.last_names)
                 masked_number = f"{first_name}{separator}{last_name}"
-            elif column_name == "ACCT":
+            elif column_name == "ACCT":                                                     # For masking data with fixed length for VARCHAR type
                 if len(account_number) == length:
                     masked_number = "".join(
                         random.choices(string.ascii_uppercase + string.digits, k=length)
                     )
                 else:
                     masked_number = account_number
-            else:
+            elif column_name == "SIN":                                                      # For masking data in numbers only for VARCHAR type
+                masked_number = "".join(random.choices(string.digits, k=length))
+            else:                                                                           # For masking data with random length in VARCHAR
                 masked_number = "".join(
                     random.choices(string.ascii_uppercase + string.digits, k=length)
                 )
@@ -107,6 +109,7 @@ if __name__ == "__main__":
         "ORG_NAME": ("VARCHAR", 206, {"separator": " "}),
         "FULL_NAME": ("VARCHAR", 45, None),
         "CAL": ("VARCHAR", 45, None),
+        "SIN": ("VARCHAR", 5, None),
     }
 
     data_masker = DataMasker()
