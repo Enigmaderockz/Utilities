@@ -2,7 +2,7 @@ import pandas as pd
 import random
 import string
 from datetime import datetime, timedelta
-from config import first_names, last_names  # Import the lists from the config file
+from config import first_names, last_names, columns_to_mask  # Import the lists from the config file
 
 
 class DataMasker:
@@ -86,7 +86,6 @@ class DataMasker:
                 )
 
         if "FULL_NAME" in df.columns:
-            print("Creating FULL_NAME column")
             df["FULL_NAME"] = df["FIRST_NAME"] + " " + df["LAST_NAME"]
 
         df.to_csv(output_file, index=False, sep="|")
@@ -95,22 +94,6 @@ class DataMasker:
 if __name__ == "__main__":
     input_file = "input.csv"
     output_file = "output.csv"
-
-    columns_to_mask = {
-        "ACCT": ("VARCHAR", 10, None),
-        "GENDER": ("VARCHAR", 1, {"allowed_values": ["F", "M"]}),
-        "ID1": ("INTEGER", 4, None),
-        "ID2": ("INTEGER", None, None),
-        "DECIMAL_COLUMN": ("DECIMAL", (5, 4), None),
-        "DATE_COLUMN": ("DATE", None, None),
-        "FIRST_NAME": ("VARCHAR", 8, None),
-        "LAST_NAME": ("VARCHAR", 8, None),
-        "ANY_NAME": ("VARCHAR", 16, {"separator": " "}),
-        "ORG_NAME": ("VARCHAR", 206, {"separator": " "}),
-        "FULL_NAME": ("VARCHAR", 45, None),
-        "CAL": ("VARCHAR", 45, None),
-        "SIN": ("VARCHAR", 5, None),
-    }
 
     data_masker = DataMasker()
     data_masker.mask_csv(input_file, output_file, columns_to_mask)
