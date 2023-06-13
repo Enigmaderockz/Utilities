@@ -16,3 +16,19 @@ last_names = ["Smith", "Johnson", "Williams", "Brown", "Jones", "Garcia", "Mille
               "Flores", "Green", "Adams", "Nelson", "Baker", "Hall", "Rivera", "Mitchell", "Carter", "Roberts",
               "Turner", "Phillips", "Campbell", "Parker", "Evans", "Edwards", "Collins", "Stewart", "Sanchez",
               "Morris", "Rogers", "Reed", "Cook", "Morgan", "Bell", "Murphy", "Bailey", "Cooper", "Richardson"]
+
+columns_to_mask = {
+        "ACCT": ("VARCHAR", 10, None),
+        "GENDER": ("VARCHAR", 1, {"allowed_values": ["F", "M"]}),
+        "ID1": ("INTEGER", 4, None),
+        "ID2": ("INTEGER", None, None),
+        "DECIMAL_COLUMN": ("DECIMAL", (5, 4), None),
+        "DATE_COLUMN": ("DATE", None, None),
+        "FIRST_NAME": ("VARCHAR", 8, None),
+        "LAST_NAME": ("VARCHAR", 8, None),
+        "ANY_NAME": ("VARCHAR", 16, {"separator": " "}),
+        "ORG_NAME": ("VARCHAR", 206, {"separator": " "}),
+        "FULL_NAME": ("VARCHAR", 45, None),
+        "CAL": ("VARCHAR", 45, None),
+        "SIN": ("VARCHAR", 5, None),
+}
