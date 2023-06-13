@@ -97,3 +97,29 @@ if __name__ == "__main__":
 
     data_masker = DataMasker()
     data_masker.mask_csv(input_file, output_file, columns_to_mask)
+    
+    
+# function to modify if large dataset and above code is performing slow
+
+def mask_csv(self, input_file, output_file, columns_to_mask, chunksize=10000):
+        reader = pd.read_csv(input_file, sep="|", chunksize=chunksize)
+
+        first_chunk = True
+        for chunk in reader:
+            for column_name, (data_type, length, extra_params) in columns_to_mask.items():
+                if column_name != "FULL_NAME" and column_name in chunk.columns:
+                    print(f"Masking data in column: {column_name}")
+                    chunk[column_name] = chunk[column_name].apply(
+                        lambda x: self.mask_account_number(
+                            column_name, x, data_type, length, extra_params
+                        )
+                    )
+
+            if "FULL_NAME" in chunk.columns:
+                chunk["FULL_NAME"] = chunk["FIRST_NAME"] + " " + chunk["LAST_NAME"]
+
+            if first_chunk:
+                chunk.to_csv(output_file, index=False, sep="|", mode="w")
+                first_chunk = False
+            else:
+                chunk.to_csv(output_file, index=False, sep="|", mode="a", header=False)
