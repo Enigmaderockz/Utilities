@@ -7,7 +7,7 @@ SELECT
 FROM
   (SELECT MAX(dt2_business) AS max_date FROM table) derived_table;
   
-def_queries(table_names):
+def generate_queries(table_names):
     query_template = "SELECT '{table_name}'; CASE WHEN MAX_DATE = DATE '2023-04-19' ELSE PICK FROM {table_name}"
     queries = [query_template.format(table_name=table_name) for table_name in table_names]
     return queries
