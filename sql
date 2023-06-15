@@ -1,6 +1,8 @@
 SELECT
   CASE
-    WHEN EXISTS (SELECT 1 FROM table WHERE dt2_business = '2023-04-19')
+    WHEN max_date = '2023-04-19'
     THEN '2023-04-19'
-    ELSE (SELECT MAX(dt2_business) FROM table)
-  END AS max_business_date;
+    ELSE max_date
+  END AS max_business_date
+FROM
+  (SELECT MAX(dt2_business) AS max_date FROM table) derived_table;
