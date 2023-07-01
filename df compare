@@ -21,3 +21,40 @@ if not are_equal:
 
     # Write the differences to a CSV file
     df_diff.to_csv('differences.csv')
+
+
+import pyodbc
+import pandas as pd
+from concurrent.futures import ThreadPoolExecutor
+
+def compare_tables(table1, table2):
+    # Load the data from the two tables into pandas DataFrames
+    df1 = pd.read_sql(f'SELECT * FROM {table1}', conn)
+    df2 = pd.read_sql(f'SELECT * FROM {table2}', conn)
+
+    # Compare the two DataFrames
+    are_equal = df1.equals(df2)
+
+    # If the DataFrames are not equal, find the differences
+    if not are_equal:
+        # Concatenate the two data frames along the column axis
+        df_all = pd.concat([df1, df2], axis='columns', keys=[table1, table2])
+
+        # Find the rows where the data in the 'First' and 'Second' data frames differ
+        df_diff = df_all.loc[df_all[table1] != df_all[table2]]
+
+        # Write the differences to a CSV file
+        df_diff.to_csv(f'differences_{table1}_{table2}.csv')
+
+# Establish a connection to the Teradata database
+conn = pyodbc.connect('DRIVER={Teradata};DBCNAME=dbcname;UID=username;PWD=password')
+
+# List of table pairs to compare
+table_pairs = [('table1', 'table2'), ('table3', 'table4'), ('table5', 'table6')]
+
+# Create a ThreadPoolExecutor
+with ThreadPoolExecutor() as executor:
+    # For each pair of tables, submit a new task to the executor
+    for table1, table2 in table_pairs:
+        executor.submit(compare_tables, table1, table2)
+
