@@ -17,10 +17,16 @@ if not are_equal:
     df_all = pd.concat([df1, df2], axis='columns', keys=['First', 'Second'])
 
     # Find the rows where the data in the 'First' and 'Second' data frames differ
-    df_diff = df_all.loc[df_all['First'] != df_all['Second']]
+    df_diff = pd.DataFrame()
+    for column in df1.columns:
+        df_diff[column] = df_all['First', column] != df_all['Second', column]
+
+    # Filter the rows where there is at least one difference
+    df_diff = df_all[df_diff.any(axis=1)]
 
     # Write the differences to a CSV file
     df_diff.to_csv('differences.csv')
+
 
 
 import pyodbc
@@ -58,3 +64,36 @@ with ThreadPoolExecutor() as executor:
     for table1, table2 in table_pairs:
         executor.submit(compare_tables, table1, table2)
 
+# parallel comparison
+
+import pyodbc
+import pandas as pd
+import dask.dataframe as dd
+
+# Establish a connection to the Teradata database
+conn = pyodbc.connect('DRIVER={Teradata};DBCNAME=dbcname;UID=username;PWD=password')
+
+# Load the data from the two tables into pandas DataFrames
+df1 = pd.read_sql('SELECT * FROM table1', conn)
+df2 = pd.read_sql('SELECT * FROM table2', conn)
+
+# Convert pandas DataFrames to Dask DataFrames
+ddf1 = dd.from_pandas(df1, npartitions=4)  # Adjust npartitions based on your CPU cores
+ddf2 = dd.from_pandas(df2, npartitions=4)
+
+# Compare the two DataFrames
+are_equal = ddf1.compute().equals(ddf2.compute())
+
+# If the DataFrames are not equal, find the differences
+if not are_equal:
+    # Concatenate the two data frames along the column axis
+    df_all = pd.concat([df1, df2], axis='columns', keys=['First', 'Second'])
+
+    # Convert the concatenated DataFrame to a Dask DataFrame
+    ddf_all = dd.from_pandas(df_all, npartitions=4)
+
+    # Find the rows where the data in the 'First' and 'Second' data frames differ
+    df_diff = ddf_all.map_partitions(lambda df: df[df['First'] != df['Second']]).compute()
+
+    # Write the differences to a CSV file
+    df_diff.to_csv('differences.csv')
