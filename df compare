@@ -68,7 +68,7 @@ with ThreadPoolExecutor() as executor:
 
 import pyodbc
 import pandas as pd
-import dask.dataframe as dd
+from multiprocessing import Pool
 
 # Establish a connection to the Teradata database
 conn = pyodbc.connect('DRIVER={Teradata};DBCNAME=dbcname;UID=username;PWD=password')
@@ -77,23 +77,29 @@ conn = pyodbc.connect('DRIVER={Teradata};DBCNAME=dbcname;UID=username;PWD=passwo
 df1 = pd.read_sql('SELECT * FROM table1', conn)
 df2 = pd.read_sql('SELECT * FROM table2', conn)
 
-# Convert pandas DataFrames to Dask DataFrames
-ddf1 = dd.from_pandas(df1, npartitions=4)  # Adjust npartitions based on your CPU cores
-ddf2 = dd.from_pandas(df2, npartitions=4)
+# Function to compare chunks of the dataframes
+def compare_chunks(args):
+    chunk1, chunk2 = args
+    return chunk1.equals(chunk2)
 
-# Compare the two DataFrames
-are_equal = ddf1.compute().equals(ddf2.compute())
+# Split the dataframes into chunks
+chunks1 = np.array_split(df1, 4)  # Adjust the number of chunks based on your CPU cores
+chunks2 = np.array_split(df2, 4)
+
+# Create a pool of workers
+with Pool(4) as p:  # Adjust the number of workers based on your CPU cores
+    results = p.map(compare_chunks, zip(chunks1, chunks2))
+
+# If any chunk comparisons returned False, the dataframes are not equal
+are_equal = all(results)
 
 # If the DataFrames are not equal, find the differences
 if not are_equal:
     # Concatenate the two data frames along the column axis
     df_all = pd.concat([df1, df2], axis='columns', keys=['First', 'Second'])
 
-    # Convert the concatenated DataFrame to a Dask DataFrame
-    ddf_all = dd.from_pandas(df_all, npartitions=4)
-
     # Find the rows where the data in the 'First' and 'Second' data frames differ
-    df_diff = ddf_all.map_partitions(lambda df: df[df['First'] != df['Second']]).compute()
+    df_diff = df_all[df_all['First'] != df_all['Second']]
 
     # Write the differences to a CSV file
     df_diff.to_csv('differences.csv')
