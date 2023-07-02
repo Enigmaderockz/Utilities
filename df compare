@@ -103,3 +103,25 @@ if not are_equal:
 
     # Write the differences to a CSV file
     df_diff.to_csv('differences.csv')
+
+
+
+
+.......................
+
+# Get the column names
+columns = df1.columns
+
+# Initialize an empty DataFrame to store the differences
+df_diff = pd.DataFrame()
+
+# Compare each column in 'First' and 'Second'
+for col in columns:
+    diff = df_all['First', col] != df_all['Second', col]
+    df_diff = pd.concat([df_diff, df_all[diff]], axis=0)
+
+# Remove duplicate rows
+df_diff = df_diff.drop_duplicates()
+
+# Write the differences to a CSV file
+df_diff.to_csv('differences.csv')
