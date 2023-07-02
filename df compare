@@ -125,3 +125,20 @@ df_diff = df_diff.drop_duplicates()
 
 # Write the differences to a CSV file
 df_diff.to_csv('differences.csv')
+
+......................
+
+
+# If the DataFrames are not equal, find the differences
+if not are_equal:
+    # Create a boolean DataFrame indicating differences
+    df_diff = df1.ne(df2)
+
+    # Filter the rows where there is at least one difference
+    any_diff = df_diff.any(axis=1)
+    df_diff = pd.concat([df1[any_diff], df2[any_diff]], axis='columns', keys=['First', 'Second'])
+
+    # Write the differences to a CSV file
+    df_diff.to_csv('differences.csv', index=False)
+else:
+    print("No differences found.")
