@@ -1,3 +1,13 @@
+table = "XYZ"
+columns = "ABC DEF GHI KOL"
+
+# Split the columns string into a list
+columns_list = columns.split()
+
+output = [f"{table}.{column}" for column in columns_list]
+
+print(output)
+
 def process_configs(sql, configs):
     results = []
     failed_configs = []
