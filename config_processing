@@ -35,3 +35,17 @@ a = "Failed due to config "
 list1 = ['ABC', 'DEF']
 output = [f"{a}{item}" for item in list1]
 print('\n'.join(output))
+
+
+list1 = ["ABC", "DEF"]
+list2 = ["123", "3453"]
+list3 = []
+
+msg1 = "configs are failing"
+msg2 = "configs are neutral"
+msg3 = "configs are passing"
+
+# Combine the messages with the lists
+comb_msg = "\n\n".join([f"{msg}\n" + "\n".join(lst) for msg, lst in zip([msg1, msg2, msg3], [list1, list2, list3]) if lst])
+
+print(comb_msg)
