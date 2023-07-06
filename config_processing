@@ -49,3 +49,12 @@ msg3 = "configs are passing"
 comb_msg = "\n\n".join([f"{msg}\n" + "\n".join(lst) for msg, lst in zip([msg1, msg2, msg3], [list1, list2, list3]) if lst])
 
 print(comb_msg)
+
+
+list1 = ["ABC", "DEF"]
+
+# Use enumerate to get index and value from list1
+output = "\n".join([f"{i+1}. {value}" for i, value in enumerate(list1)])
+
+print(output)
+
