@@ -1,0 +1,27 @@
+def process_configs(sql, configs):
+    results = []
+    failed_configs = []
+    for config in configs:
+        table = config + ".code"
+        result = compare(sql, config, table)
+        if result == 0:
+            results.append(True)
+        else:
+            results.append(False)
+            failed_configs.append(config)
+    return all(results), failed_configs
+
+def compare_configs(sql, configs):
+    z, failed_configs = process_configs(sql, configs)
+    if z:
+        print("All comparisons returned zero.")
+    else:
+        print("At least one comparison did not return zero.")
+        print("Configs that failed: ", failed_configs)
+
+
+
+a = "Failed due to config "
+list1 = ['ABC', 'DEF']
+output = [f"{a}{item}" for item in list1]
+print('\n'.join(output))
