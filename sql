@@ -18,3 +18,6 @@ queries = generate_queries(table_names)
 for query in queries:
     print(query)
 
+for file in *.txt.processed; do mv "$file" "${file%.processed}"; done
+
+
