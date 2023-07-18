@@ -36,19 +36,34 @@ df = pd.read_sql(query, conn)
 # Save the DataFrame as a CSV file
 df.to_csv('output.csv', index=False, sep=',')  # Change the separator if needed
 
+#paralle processing
+from pyhive import hive
+import pandas as pd
+import concurrent.futures
 
-col_check_string = 'a,b,c'
-col_check_tuple = tuple(col_check_string.split(','))
-col_check_formatted = ', '.join(col_check_tuple)
-print(col_check_formatted)
+# Establish the connection
+conn = hive.Connection(host="your_host", port=10000, username="your_username", database="default")
 
-html += '<tr><td style="font-family: Arial, sans-serif; font-size: 14px;"></td></tr>\n'
-html += (
-    '<tr><td style="font-family: Arial, sans-serif; font-size: 14px;"><a href="data:text/csv;base64,'
-    + csv_base64
-    + '" style="font-weight: bold; color: blue; text-decoration: none;" download="output.csv">Recon summary</a></td></tr>\n'
-)
-html += '<tr style="height: 20px;"><td style="font-size: 20px;"></td></tr>\n'
-html += "</table>\n"
-html += "</div>\n
+# Define the query
+query = "SELECT * FROM dl.rbg.refinery_table"
+
+# Define the number of threads to use for parallel processing
+num_threads = 4  # Adjust this based on the available resources and desired concurrency
+
+# Function to execute the query and return the result as a DataFrame
+def execute_query(query):
+    df = pd.read_sql(query, conn)
+    return df
+
+# Execute the query using parallel processing
+with concurrent.futures.ThreadPoolExecutor(max_workers=num_threads) as executor:
+    # Submit the query execution tasks to the executor
+    future = executor.submit(execute_query, query)
+
+    # Retrieve the result from the future when it's ready
+    df = future.result()
+
+# Save the DataFrame as a CSV file
+df.to_csv('output.csv', index=False, sep=',')  # Change the separator if needed
+
 
