@@ -21,3 +21,20 @@ for query in queries:
 for file in *.txt.processed; do mv "$file" "${file%.processed}"; done
 
 
+from pyhive import hive
+import pandas as pd
+
+# Establish the connection
+conn = hive.Connection(host="your_host", port=10000, username="your_username", database="default")
+
+# Define the query
+query = "SELECT * FROM dl.rbg.refinery_table"
+
+# Execute the query and read the result into a pandas DataFrame
+df = pd.read_sql(query, conn)
+
+# Save the DataFrame as a CSV file
+df.to_csv('output.csv', index=False, sep=',')  # Change the separator if needed
+
+
+
