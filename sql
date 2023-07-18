@@ -37,4 +37,10 @@ df = pd.read_sql(query, conn)
 df.to_csv('output.csv', index=False, sep=',')  # Change the separator if needed
 
 
+col_check_string = 'a,b,c'
+col_check_tuple = tuple(col_check_string.split(','))
+col_check_formatted = ', '.join(col_check_tuple)
+print(col_check_formatted)
+
+
 
