@@ -69,4 +69,33 @@ df.to_csv('output.csv', index=False, sep=',')  # Change the separator if needed
 sorted_rows1 = sorted(list(rows1), key=mixed_type_sort_key)
 sorted_rows2 = sorted(list(rows2), key=mixed_type_sort_key)
 
+# Write the rows with differences to the HTML file
+            
+            for diff_row in diff_rows:
+                for i in range(2):  # Iterate twice for both files
+                    file_data = [(file1, diff_row[2]), (file2, diff_row[3])][i]
+                    file_name, row_data = file_data
+
+                    html += '<tr style="border: 1px solid black;">'
+
+                    # Write the file name and row number
+                    html += f'<td style="border: 1px solid black;">{file_name}</td>'
+                    html += f'<td style="border: 1px solid black;">{diff_row[0]}</td>'
+
+                    # Write the values of each column of the row
+                    for col in header1:
+                        cell_style = ''
+                        cell_value = row_data.get(col)
+
+                        if col in diff_row[1]:
+                            cell_style = 'background-color: #ffcfbf;font-weight: bold;'
+
+                        if pd.isnull(cell_value):
+                            cell_value = 'NULL'
+
+                        html += f'<td style="border: 1px solid black; {cell_style}">{cell_value}</td>'
+
+                    html += '</tr>'
+
+
 
