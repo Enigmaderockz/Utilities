@@ -42,5 +42,13 @@ col_check_tuple = tuple(col_check_string.split(','))
 col_check_formatted = ', '.join(col_check_tuple)
 print(col_check_formatted)
 
-
+html += '<tr><td style="font-family: Arial, sans-serif; font-size: 14px;"></td></tr>\n'
+html += (
+    '<tr><td style="font-family: Arial, sans-serif; font-size: 14px;"><a href="data:text/csv;base64,'
+    + csv_base64
+    + '" style="font-weight: bold; color: blue; text-decoration: none;" download="output.csv">Recon summary</a></td></tr>\n'
+)
+html += '<tr style="height: 20px;"><td style="font-size: 20px;"></td></tr>\n'
+html += "</table>\n"
+html += "</div>\n
 
