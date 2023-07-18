@@ -66,8 +66,8 @@ with concurrent.futures.ThreadPoolExecutor(max_workers=num_threads) as executor:
 # Save the DataFrame as a CSV file
 df.to_csv('output.csv', index=False, sep=',')  # Change the separator if needed
 
-sorted_rows1 = sorted(list(rows1), key=mixed_type_sort_key)
-sorted_rows2 = sorted(list(rows2), key=mixed_type_sort_key)
+sorted_rows1 = sorted(list(rows1), key=lambda row: mixed_type_sort_key(row, sort_keys))
+sorted_rows2 = sorted(list(rows2), key=lambda row: mixed_type_sort_key(row, sort_keys))
 
 # Write the rows with differences to the HTML file
             
