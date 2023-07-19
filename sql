@@ -66,9 +66,11 @@ with concurrent.futures.ThreadPoolExecutor(max_workers=num_threads) as executor:
 # Save the DataFrame as a CSV file
 df.to_csv('output.csv', index=False, sep=',')  # Change the separator if needed
 
+# Sorting without parallel processing
 sorted_rows1 = sorted(list(rows1), key=lambda row: mixed_type_sort_key(row, sort_keys))
 sorted_rows2 = sorted(list(rows2), key=lambda row: mixed_type_sort_key(row, sort_keys))
 
+# Improved performance to write html differences
 # Write the rows with differences to the HTML file
             
             for diff_row in diff_rows:
@@ -97,5 +99,21 @@ sorted_rows2 = sorted(list(rows2), key=lambda row: mixed_type_sort_key(row, sort
 
                     html += '</tr>'
 
+# Improved sorting
 
+def sort_rows(rows, sort_keys):
+    return sorted(rows, key=lambda row: mixed_type_sort_key(row, sort_keys))
+
+with concurrent.futures.ThreadPoolExecutor() as executor:
+            future_to_sort = {executor.submit(sort_rows, rows, sort_keys): rows for rows in [rows1, rows2]}
+            for future in concurrent.futures.as_completed(future_to_sort):
+                rows = future_to_sort[future]
+                try:
+                    sorted_rows = future.result()
+                    if rows == rows1:
+                        sorted_rows1 = sorted_rows
+                    else:
+                        sorted_rows2 = sorted_rows
+                except Exception as exc:
+                    print('%r generated an exception: %s' % (rows, exc))
 
