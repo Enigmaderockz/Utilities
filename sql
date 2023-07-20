@@ -117,3 +117,26 @@ with concurrent.futures.ThreadPoolExecutor() as executor:
                 except Exception as exc:
                     print('%r generated an exception: %s' % (rows, exc))
 
+
+import itertools
+
+def is_iterator_empty(iterator):
+    # Check if the iterator is empty without consuming the first element
+    return next(iterator, None) is None
+
+with open(file1, "r") as f1, open(file2, "r") as f2, open(outfile, "w") as outfile:
+    rows1 = read_file(file1, column_mapping)
+    rows2 = read_file(file2, column_mapping)
+
+    # Check if any of the iterators are empty
+    if is_iterator_empty(rows1) or is_iterator_empty(rows2):
+        raise ValueError("One or both files are empty")
+
+    # If not empty, reset the iterators and get the first rows
+    rows1 = itertools.chain([first_row1], rows1)
+    rows2 = itertools.chain([first_row2], rows2)
+
+    header1 = list(first_row1.keys())
+    header2 = list(first_row2.keys())
+
+# Continue with the rest of the code...
