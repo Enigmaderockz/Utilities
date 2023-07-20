@@ -118,25 +118,13 @@ with concurrent.futures.ThreadPoolExecutor() as executor:
                     print('%r generated an exception: %s' % (rows, exc))
 
 
-import itertools
+import subprocess
 
-def has_data(iterator):
-    # Check if the iterator has any data beyond the header
-    return any(True for _ in iterator)
+file_path = "f.csv"
 
-with open(file1, "r") as f1, open(file2, "r") as f2, open(outfile, "w") as outfile:
-    rows1 = read_file(file1, column_mapping)
-    rows2 = read_file(file2, column_mapping)
+# Get the line count using the 'wc' command
+result = subprocess.run(["wc", "-l", file_path], capture_output=True, text=True)
+line_count = int(result.stdout.split()[0])
 
-    # Check if any of the iterators are empty (no data beyond the header)
-    if not has_data(rows1) or not has_data(rows2):
-        raise ValueError("One or both files are empty")
-
-    # If not empty, reset the iterators and get the first rows
-    rows1 = itertools.chain([first_row1], rows1)
-    rows2 = itertools.chain([first_row2], rows2)
-
-    header1 = list(first_row1.keys())
-    header2 = list(first_row2.keys())
-
-# Continue with the rest of the code...
+# Print the line count
+print("Number of lines in the CSV file:", line_count)
