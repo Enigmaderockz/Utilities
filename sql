@@ -120,16 +120,16 @@ with concurrent.futures.ThreadPoolExecutor() as executor:
 
 import itertools
 
-def is_iterator_empty(iterator):
-    # Check if the iterator is empty without consuming the first element
-    return next(iterator, None) is None
+def has_data(iterator):
+    # Check if the iterator has any data beyond the header
+    return any(True for _ in iterator)
 
 with open(file1, "r") as f1, open(file2, "r") as f2, open(outfile, "w") as outfile:
     rows1 = read_file(file1, column_mapping)
     rows2 = read_file(file2, column_mapping)
 
-    # Check if any of the iterators are empty
-    if is_iterator_empty(rows1) or is_iterator_empty(rows2):
+    # Check if any of the iterators are empty (no data beyond the header)
+    if not has_data(rows1) or not has_data(rows2):
         raise ValueError("One or both files are empty")
 
     # If not empty, reset the iterators and get the first rows
