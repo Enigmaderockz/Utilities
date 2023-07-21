@@ -101,22 +101,18 @@ sorted_rows2 = sorted(list(rows2), key=lambda row: mixed_type_sort_key(row, sort
 
 # Improved sorting
 
-def sort_rows(rows, sort_keys):
-    return sorted(rows, key=lambda row: mixed_type_sort_key(row, sort_keys))
+def parallel_sort_rows(rows, sort_keys=None):
+    return sorted(list(rows), key=lambda row: mixed_type_sort_key(row, sort_keys))
 
-with concurrent.futures.ThreadPoolExecutor() as executor:
-            future_to_sort = {executor.submit(sort_rows, rows, sort_keys): rows for rows in [rows1, rows2]}
-            for future in concurrent.futures.as_completed(future_to_sort):
-                rows = future_to_sort[future]
-                try:
-                    sorted_rows = future.result()
-                    if rows == rows1:
-                        sorted_rows1 = sorted_rows
-                    else:
-                        sorted_rows2 = sorted_rows
-                except Exception as exc:
-                    print('%r generated an exception: %s' % (rows, exc))
+# Parallel sorting using ThreadPoolExecutor
+        with ThreadPoolExecutor() as executor:
+            future1 = executor.submit(parallel_sort_rows, rows1, sort_keys)
+            future2 = executor.submit(parallel_sort_rows, rows2, sort_keys)
 
+            sorted_rows1 = future1.result()
+            sorted_rows2 = future2.result()
+
+# Unix way to fetch count of lines from csv
 
 import subprocess
 
@@ -128,3 +124,5 @@ line_count = int(result.stdout.split()[0])
 
 # Print the line count
 print("Number of lines in the CSV file:", line_count)
+
+Windows way to fetch count of lines from csv
