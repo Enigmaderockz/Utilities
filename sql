@@ -135,6 +135,9 @@ print(num_lines)
 ex_list = ['Transaction Date', 'Category']
 compare_csv_files("a_tmp.csv", "b_tmp.csv", "n.html",exclude_keys=ex_list )
 
-string_data = "A, B, C"
-character_list = string_data.split(", ")
-print(character_list)
+ss = "A, B, C"  # or ss = "A" if you want to convert it to ['A']
+
+# Remove any extra spaces around the elements and split the string by ','
+result_list = [element.strip() for element in ss.split(',')]
+
+print(result_list)
