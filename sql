@@ -126,3 +126,15 @@ line_count = int(result.stdout.split()[0])
 print("Number of lines in the CSV file:", line_count)
 
 Windows way to fetch count of lines from csv
+
+num_lines = sum(1 for line in open('a.csv'))
+print(num_lines)
+
+# Modifications to be done in iupgrade
+
+ex_list = ['Transaction Date', 'Category']
+compare_csv_files("a_tmp.csv", "b_tmp.csv", "n.html",exclude_keys=ex_list )
+
+string_data = "A, B, C"
+character_list = string_data.split(", ")
+print(character_list)
