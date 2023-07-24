@@ -66,6 +66,25 @@ with concurrent.futures.ThreadPoolExecutor(max_workers=num_threads) as executor:
 # Save the DataFrame as a CSV file
 df.to_csv('output.csv', index=False, sep=',')  # Change the separator if needed
 
+import re
+
+def natural_sort_key(s, _nsre=re.compile('([0-9]+)')):
+    return [int(text) if text.isdigit() else text.lower()
+            for text in re.split(_nsre, s)]  
+
+def mixed_type_sort_key(row, keys=None):
+    if keys is None:
+        keys = row.keys()  # Use all keys if none are specified
+
+    sort_key = []
+    for key in keys:
+        value = row[key]
+        if isinstance(value, str):
+            sort_key.append((1, natural_sort_key(value)))
+        else:
+            sort_key.append((0, value))
+    return tuple(sort_key)
+
 # Sorting without parallel processing
 sorted_rows1 = sorted(list(rows1), key=lambda row: mixed_type_sort_key(row, sort_keys))
 sorted_rows2 = sorted(list(rows2), key=lambda row: mixed_type_sort_key(row, sort_keys))
