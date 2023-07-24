@@ -68,8 +68,9 @@ df.to_csv('output.csv', index=False, sep=',')  # Change the separator if needed
 
 import re
 
-def alphanumeric_sort_key(key):
-    return [int(c) if c.isdigit() else c for c in re.split('(\d+)', key)]
+def alphanumeric_key(value):
+    parts = re.split(r'(\d+)', value)  # Split into parts of numbers and strings
+    return [(int(part) if part.isdigit() else part) for part in parts]
 
 def mixed_type_sort_key(row, keys=None):
     if keys is None:
@@ -79,9 +80,9 @@ def mixed_type_sort_key(row, keys=None):
     for key in keys:
         value = row[key]
         if isinstance(value, str):
-            sort_key.append(alphanumeric_sort_key(value))
+            sort_key.append((1, alphanumeric_key(value)))
         else:
-            sort_key.append(value)
+            sort_key.append((0, value))
     return tuple(sort_key)
 
 # Sorting without parallel processing
