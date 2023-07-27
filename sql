@@ -19,6 +19,7 @@ for query in queries:
     print(query)
 
 for file in *.txt.processed; do mv "$file" "${file%.processed}"; done
+for file in *_20230405.txt; do mv "$file" "${file/_20230405.txt/_20230909.txt}"; done
 
 
 from pyhive import hive
