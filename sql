@@ -124,6 +124,16 @@ sorted_rows2 = sorted(list(rows2), key=lambda row: mixed_type_sort_key(row, sort
 def parallel_sort_rows(rows, sort_keys=None):
     return sorted(list(rows), key=lambda row: mixed_type_sort_key(row, sort_keys))
 
+# One more way
+
+def parallel_sort_rows(rows, sort_keys=None):
+    # Number of parallel threads (adjust according to your system)
+    num_threads = 4
+
+    with ThreadPoolExecutor(max_workers=num_threads) as executor:
+        future = executor.submit(sorted, rows, key=lambda row: mixed_type_sort_key(row, sort_keys))
+        sorted_rows = future.result()
+
 # Parallel sorting using ThreadPoolExecutor
         with ThreadPoolExecutor() as executor:
             future1 = executor.submit(parallel_sort_rows, rows1, sort_keys)
