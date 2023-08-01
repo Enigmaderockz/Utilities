@@ -173,16 +173,14 @@ result_list = [element.strip() for element in ss.split(',')]
 print(result_list)
 
 
-import re
+# Specify the filename for the CSV file
+csv_filename = "output.csv"
 
-input_string = "/ms/dis/kurn -wef/sgsgsg/s/sgsg-ssgsgksg/sgsg /sgsgs-sgsgsg /sgsgsg -\"/fssfs/run/bin/cool.sh -cAMEXTA >>"
+# Write the list to the CSV file
+with open(csv_filename, mode='w', newline='') as file:
+    writer = csv.writer(file)
+    writer.writerow(['Column1'])  # Writing the header row, if needed
 
-# Use regex to extract the script and config values
-matches = re.findall(r"/(\w+\.sh)\s+-c(\w+)", input_string)
-
-if matches:
-    script, config = matches[0]
-    output = f"Script: {script}|Config: {config}|"
-    print(output)  # Output: Script: cool.sh|Config: AMEXTA|
-else:
-    print("No match found.")
+    # Writing the data from the list to the CSV file
+    for item in my_list:
+        writer.writerow([item])
