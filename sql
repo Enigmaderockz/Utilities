@@ -171,3 +171,39 @@ ss = "A, B, C"  # or ss = "A" if you want to convert it to ['A']
 result_list = [element.strip() for element in ss.split(',')]
 
 print(result_list)
+
+
+from datetime import datetime
+
+global timejob
+timejob = []
+
+# Function to format the timedelta as hh:mm:ss
+def format_timedelta(td):
+    hours, remainder = divmod(td.seconds, 3600)
+    minutes, seconds = divmod(remainder, 60)
+    return f"{hours:02d}:{minutes:02d}:{seconds:02d}"
+
+# Fetch the current time
+start_time = datetime.now()
+end_time = datetime.now()
+exec_time = end_time - start_time
+
+# Format and append the execution time to the timejob list
+timejob.append(format_timedelta(exec_time))
+
+# Perform other tasks if needed
+
+# Fetch the current time again (for a different task, if required)
+start_time = datetime.now()
+end_time = datetime.now()
+exec_time = end_time - start_time
+
+# Format and append the execution time to the timejob list
+timejob.append(format_timedelta(exec_time))
+
+# ... Repeat for more tasks if needed
+
+# Print the timejob list with time values in hh:mm:ss format
+print("Timejob:", timejob)
+
