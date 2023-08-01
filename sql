@@ -173,37 +173,16 @@ result_list = [element.strip() for element in ss.split(',')]
 print(result_list)
 
 
-from datetime import datetime
+import re
 
-global timejob
-timejob = []
+input_string = "/ms/dis/kurn -wef/sgsgsg/s/sgsg-ssgsgksg/sgsg /sgsgs-sgsgsg /sgsgsg -\"/fssfs/run/bin/cool.sh -cAMEXTA >>"
 
-# Function to format the timedelta as hh:mm:ss
-def format_timedelta(td):
-    hours, remainder = divmod(td.seconds, 3600)
-    minutes, seconds = divmod(remainder, 60)
-    return f"{hours:02d}:{minutes:02d}:{seconds:02d}"
+# Use regex to extract the script and config values
+matches = re.findall(r"/(\w+\.sh)\s+-c(\w+)", input_string)
 
-# Fetch the current time
-start_time = datetime.now()
-end_time = datetime.now()
-exec_time = end_time - start_time
-
-# Format and append the execution time to the timejob list
-timejob.append(format_timedelta(exec_time))
-
-# Perform other tasks if needed
-
-# Fetch the current time again (for a different task, if required)
-start_time = datetime.now()
-end_time = datetime.now()
-exec_time = end_time - start_time
-
-# Format and append the execution time to the timejob list
-timejob.append(format_timedelta(exec_time))
-
-# ... Repeat for more tasks if needed
-
-# Print the timejob list with time values in hh:mm:ss format
-print("Timejob:", timejob)
-
+if matches:
+    script, config = matches[0]
+    output = f"Script: {script}|Config: {config}|"
+    print(output)  # Output: Script: cool.sh|Config: AMEXTA|
+else:
+    print("No match found.")
