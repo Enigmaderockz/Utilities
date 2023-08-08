@@ -196,3 +196,5 @@ def pytest_bdd_before_example(request, feature, scenario, example, index):
     print("Example:", example.name)
     print("Example index:", index)
 
+  grep -P '[^\x00-\x7F]' file.txt
+
