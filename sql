@@ -184,3 +184,15 @@ with open(csv_filename, mode='w', newline='') as file:
     # Writing the data from the list to the CSV file
     for item in my_list:
         writer.writerow([item])
+
+# conftest.py
+
+def pytest_bdd_before_example(request, feature, scenario, example, index):
+    # Custom logic to be executed before each example in a scenario outline
+    print("Before example:", example.name)
+    # You can access the feature, scenario, example, and index objects for additional information if needed
+    print("Feature:", feature.name)
+    print("Scenario:", scenario.name)
+    print("Example:", example.name)
+    print("Example index:", index)
+
