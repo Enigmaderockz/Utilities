@@ -160,41 +160,5 @@ Windows way to fetch count of lines from csv
 num_lines = sum(1 for line in open('a.csv'))
 print(num_lines)
 
-# Modifications to be done in iupgrade
 
-ex_list = ['Transaction Date', 'Category']
-compare_csv_files("a_tmp.csv", "b_tmp.csv", "n.html",exclude_keys=ex_list )
-
-ss = "A, B, C"  # or ss = "A" if you want to convert it to ['A']
-
-# Remove any extra spaces around the elements and split the string by ','
-result_list = [element.strip() for element in ss.split(',')]
-
-print(result_list)
-
-
-# Specify the filename for the CSV file
-csv_filename = "output.csv"
-
-# Write the list to the CSV file
-with open(csv_filename, mode='w', newline='') as file:
-    writer = csv.writer(file)
-    writer.writerow(['Column1'])  # Writing the header row, if needed
-
-    # Writing the data from the list to the CSV file
-    for item in my_list:
-        writer.writerow([item])
-
-# conftest.py
-
-def pytest_bdd_before_example(request, feature, scenario, example, index):
-    # Custom logic to be executed before each example in a scenario outline
-    print("Before example:", example.name)
-    # You can access the feature, scenario, example, and index objects for additional information if needed
-    print("Feature:", feature.name)
-    print("Scenario:", scenario.name)
-    print("Example:", example.name)
-    print("Example index:", index)
-
-  grep -P '[^\x00-\x7F]' file.txt
 
