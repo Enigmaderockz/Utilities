@@ -1,3 +1,5 @@
+# Check for null values in columns
+
 import pandas as pd
 import numpy as np
 import argparse
@@ -32,3 +34,37 @@ for column in df.columns:
             print(f'Null values in {column}: {null_values.sum()} at line no {tuple(line_numbers)}')
         else:
             print(f'Null values in {column}: 0')
+
+# Usage: python null.py --skip=Column4,Column2
+
+# Executing macros in Teradata
+
+import teradatasql
+import csv
+
+# Connect to Teradata
+con = teradatasql.connect('<your_connection_string>')
+
+# Create a cursor
+cursor = con.cursor()
+
+# Execute the macro
+cursor.execute("EXEC MACRO('2023-09-08')")
+
+# Fetch the data
+data = cursor.fetchall()
+
+# Define the CSV file path
+csv_file_path = '<path_to_csv_file>'
+
+# Write the data to the CSV file
+with open(csv_file_path, 'w', newline='') as csv_file:
+    writer = csv.writer(csv_file)
+    writer.writerows(data)
+
+# Close the cursor and connection
+cursor.close()
+con.close()
+
+print("Data has been successfully stored in the CSV file.")
+
