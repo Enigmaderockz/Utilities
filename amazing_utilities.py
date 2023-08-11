@@ -42,29 +42,36 @@ for column in df.columns:
 import teradatasql
 import csv
 
-# Connect to Teradata
-con = teradatasql.connect('<your_connection_string>')
+def execute_macro_and_return_csv(connection_string, macro_date, csv_file_path):
+    # Connect to Teradata
+    con = teradatasql.connect(connection_string)
 
-# Create a cursor
-cursor = con.cursor()
+    # Create a cursor
+    cursor = con.cursor()
 
-# Execute the macro
-cursor.execute("EXEC MACRO('2023-09-08')")
+    # Execute the macro
+    cursor.execute(f"EXEC MACRO('{macro_date}')")
 
-# Fetch the data
-data = cursor.fetchall()
+    # Fetch the data
+    data = cursor.fetchall()
 
-# Define the CSV file path
+    # Write the data to the CSV file
+    with open(csv_file_path, 'w', newline='') as csv_file:
+        writer = csv.writer(csv_file)
+        writer.writerows(data)
+
+    # Close the cursor and connection
+    cursor.close()
+    con.close()
+
+    return csv_file_path
+
+# Example usage
+connection_string = '<your_connection_string>'
+macro_date = '2023-09-08'
 csv_file_path = '<path_to_csv_file>'
 
-# Write the data to the CSV file
-with open(csv_file_path, 'w', newline='') as csv_file:
-    writer = csv.writer(csv_file)
-    writer.writerows(data)
+csv_file_path = execute_macro_and_return_csv(connection_string, macro_date, csv_file_path)
+print("Data has been successfully stored in the CSV file:", csv_file_path)
 
-# Close the cursor and connection
-cursor.close()
-con.close()
-
-print("Data has been successfully stored in the CSV file.")
 
