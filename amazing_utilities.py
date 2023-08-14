@@ -67,29 +67,46 @@ def execute_macro_and_return_csv(connection_string, macro_date, csv_file_path):
     return csv_file_path
 
 # Example usage
-connection_string = '<your_connection_string>'
-macro_date = '2023-09-08'
-csv_file_path = '<path_to_csv_file>'
+import teradatasql
+import csv
 
-csv_file_path = execute_macro_and_return_csv(connection_string, macro_date, csv_file_path)
-print("Data has been successfully stored in the CSV file:", csv_file_path)
+def execute_macro_and_return_csv(connection_string, macro_date, csv_file_path):
+    # Connect to Teradata
+    con = teradatasql.connect(connection_string)
 
-# macro related functions
+    # Create a cursor
+    cursor = con.cursor()
 
-# run macro data from SQL file
+    # Execute the macro
+    cursor.execute(f"EXEC MACRO('{macro_date}')")
 
-import re
+    # Fetch the data
+    data = cursor.fetchall()
+    total_rows = cursor.rowcount
 
-with open("abc.sql", "r") as sql_file:
-    sql_content = sql_file.read()
+    # Write the data to the CSV file
+    with open(csv_file_path, 'w', newline='') as csv_file:
+        writer = csv.writer(csv_file)
+        
+        # Initialize progress variables
+        rows_fetched = 0
+        last_progress = 0
+        
+        for row in data:
+            # Calculate progress and print real-time progress
+            rows_fetched += 1
+            progress = int(rows_fetched / total_rows * 100)
+            if progress > last_progress:
+                print(f"Progress: {progress}%")
+                last_progress = progress
+                
+            writer.writerow(row)
 
-a = sql_content.strip()
+    # Close the cursor and connection
+    cursor.close()
+    con.close()
 
-match = re.search(r'EXEC\s+(\w+\.\w+)\s*\(', sql_content)
-b = f"SHOW MACRO {match.group(1)}" if match else None
-
-print("a =", a)
-print("b =", b)
+    return csv_file_path
 
 # fetch business date
 
