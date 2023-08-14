@@ -91,4 +91,9 @@ b = f"SHOW MACRO {match.group(1)}" if match else None
 print("a =", a)
 print("b =", b)
 
+# fetch business date
+
+formatted_date = f"{input_string.strip()[:4]}-{input_string[4:6]}-{input_string[6:8]}"
+print(formatted_date)
+
 
