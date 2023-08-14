@@ -74,4 +74,11 @@ csv_file_path = '<path_to_csv_file>'
 csv_file_path = execute_macro_and_return_csv(connection_string, macro_date, csv_file_path)
 print("Data has been successfully stored in the CSV file:", csv_file_path)
 
+# To retun true or false from nested list
+
+data = [["in the main col"]]
+substring_to_find = "the main"
+found = any(substring_to_find in item for inner_list in data for item in inner_list)
+print(f"The substring '{substring_to_find}' is {'' if found else 'not '}present in the data.")
+
 
