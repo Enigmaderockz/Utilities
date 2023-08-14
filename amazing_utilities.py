@@ -97,3 +97,28 @@ formatted_date = f"{input_string.strip()[:4]}-{input_string[4:6]}-{input_string[
 print(formatted_date)
 
 
+# to fetch details from file
+
+import re
+
+# Read the file
+with open('a.txt', 'r') as file:
+    content = file.read()
+
+# Extract values using regex
+load_date_match = re.findall(r'\[INFO\]::LOAD_DATE\s*:\s*([^:\n]+)', content)
+sql_script_match = re.findall(r'\[INFO\]::SQL_Script\s*:\s*([^:\n]+)', content)
+output_file_match = re.findall(r'\[INFO\]::OUTPUT_FILE\s*:\s*([^:\n]+)', content)
+
+# Get the last occurrences
+load_date = load_date_match[-1].strip()
+sql_script = sql_script_match[-1].strip()
+output_file = output_file_match[-1].strip()
+
+# Print the extracted values
+print("LOAD_DATE:", load_date)
+print("SQL_Script:", sql_script)
+print("OUTPUT_FILE:", output_file)
+
+
+
