@@ -1,176 +1,78 @@
-import pyodbc
 import pandas as pd
 
-# Establish a connection to the Teradata database
-conn = pyodbc.connect('DRIVER={Teradata};DBCNAME=dbcname;UID=username;PWD=password')
+data1 = {
+    'A': [1, 's', 8, 9, 10],
+    'B': [10, 20, 30, 40, 50],
+    'C': [100, 200, 300, 400, 500],
+    'D': [1000, 2000, 3000, 4000, 5000],
+    'E': [10000, 20000, 30000, 40000, 50000]
+}
 
-# Load the data from the two tables into pandas DataFrames
-df1 = pd.read_sql('SELECT * FROM table1', conn)
-df2 = pd.read_sql('SELECT * FROM table2', conn)
+data2 = {
+    'A': [1, '', 8, 9, 10],
+    'B': [10, 70, 80, 90, 100],
+    'C': [100, 700, 800, 900, 1000],
+    'D': [1000, 7000, 8000, 9000, 10000],
+    'E': [10000, 70000, 80000, 90000, 100000]
+}
 
-# Compare the two DataFrames
-are_equal = df1.equals(df2)
+df1 = pd.DataFrame(data1)
+print(df1)
+df2 = pd.DataFrame(data2)
+print(df2)
 
-# If the DataFrames are not equal, find the differences
-if not are_equal:
-    # Concatenate the two data frames along the column axis
-    df_all = pd.concat([df1, df2], axis='columns', keys=['First', 'Second'])
+# Add 'Row#' column
+df1['Row#'] = range(1, len(df1) + 1)
+df2['Row#'] = range(1, len(df2) + 1)
 
-    # Find the rows where the data in the 'First' and 'Second' data frames differ
-    df_diff = pd.DataFrame()
-    for column in df1.columns:
-        df_diff[column] = df_all['First', column] != df_all['Second', column]
+# Add 'Files' column
+df1['Files'] = 'First'
+df2['Files'] = 'Second'
 
-    # Filter the rows where there is at least one difference
-    df_diff = df_all[df_diff.any(axis=1)]
+# Get the common columns dynamically
+common_columns = df1.columns.intersection(df2.columns)
 
-    # Write the differences to a CSV file
-    df_diff.to_csv('differences.csv')
+# Reorder the columns with 'Files' and 'Row#' first, followed by common columns
+reordered_columns = ['Files', 'Row#'] + common_columns.difference(['Files', 'Row#']).tolist()
 
+# Reorder the dataframes columns
+df1 = df1[reordered_columns]
+df2 = df2[reordered_columns]
 
+# Exclude 'Row#' and 'Files' columns for comparison
+columns_to_compare = common_columns.difference(['Row#', 'Files'])
 
-import pyodbc
-import pandas as pd
-from concurrent.futures import ThreadPoolExecutor
+# Check for differences in selected columns
+df_diff = df1[columns_to_compare].ne(df2[columns_to_compare])
 
-def compare_tables(table1, table2):
-    # Load the data from the two tables into pandas DataFrames
-    df1 = pd.read_sql(f'SELECT * FROM {table1}', conn)
-    df2 = pd.read_sql(f'SELECT * FROM {table2}', conn)
+# Compare None values in corresponding columns
+none_comparison = (df1[columns_to_compare].isnull()) & (df2[columns_to_compare].isnull())
 
-    # Compare the two DataFrames
-    are_equal = df1.equals(df2)
+# Exclude rows where both have None in corresponding columns
+df_diff = df_diff[~none_comparison]
 
-    # If the DataFrames are not equal, find the differences
-    if not are_equal:
-        # Concatenate the two data frames along the column axis
-        df_all = pd.concat([df1, df2], axis='columns', keys=[table1, table2])
+# Filter the rows where there is at least one difference
+any_diff = df_diff.any(axis=1)
+df_diff_filtered = pd.concat([df1[any_diff], df2[any_diff]], ignore_index=True)
 
-        # Find the rows where the data in the 'First' and 'Second' data frames differ
-        df_diff = df_all.loc[df_all[table1] != df_all[table2]]
+# Sort the dataframe based on 'Row#' column
+df_diff_sorted = df_diff_filtered.sort_values(by='Row#')
 
-        # Write the differences to a CSV file
-        df_diff.to_csv(f'differences_{table1}_{table2}.csv')
+# Reset the index before writing to CSV
+df_diff_sorted = df_diff_sorted.reset_index(drop=True)
 
-# Establish a connection to the Teradata database
-conn = pyodbc.connect('DRIVER={Teradata};DBCNAME=dbcname;UID=username;PWD=password')
+# Write the sorted differences to a CSV file
+df_diff_sorted.to_csv('differences.csv', index=False)
 
-# List of table pairs to compare
-table_pairs = [('table1', 'table2'), ('table3', 'table4'), ('table5', 'table6')]
+# Print the number of records with differences
+num_records_with_diff = len(df_diff_sorted)
+print(f"Number of records with differences: {num_records_with_diff}")
 
-# Create a ThreadPoolExecutor
-with ThreadPoolExecutor() as executor:
-    # For each pair of tables, submit a new task to the executor
-    for table1, table2 in table_pairs:
-        executor.submit(compare_tables, table1, table2)
+if num_records_with_diff > 0:
+    # List columns with differences (excluding 'Files' column)
+    different_columns = df_diff.columns[df_diff.any()]
+    different_columns = different_columns.difference(['Files'])
+    print("Columns with differences:", ', '.join(different_columns))
 
-# parallel comparison
-
-import pyodbc
-import pandas as pd
-from multiprocessing import Pool
-
-# Establish a connection to the Teradata database
-conn = pyodbc.connect('DRIVER={Teradata};DBCNAME=dbcname;UID=username;PWD=password')
-
-# Load the data from the two tables into pandas DataFrames
-df1 = pd.read_sql('SELECT * FROM table1', conn)
-df2 = pd.read_sql('SELECT * FROM table2', conn)
-
-# Function to compare chunks of the dataframes
-def compare_chunks(args):
-    chunk1, chunk2 = args
-    return chunk1.equals(chunk2)
-
-# Split the dataframes into chunks
-chunks1 = np.array_split(df1, 4)  # Adjust the number of chunks based on your CPU cores
-chunks2 = np.array_split(df2, 4)
-
-# Create a pool of workers
-with Pool(4) as p:  # Adjust the number of workers based on your CPU cores
-    results = p.map(compare_chunks, zip(chunks1, chunks2))
-
-# If any chunk comparisons returned False, the dataframes are not equal
-are_equal = all(results)
-
-# If the DataFrames are not equal, find the differences
-if not are_equal:
-    # Concatenate the two data frames along the column axis
-    df_all = pd.concat([df1, df2], axis='columns', keys=['First', 'Second'])
-
-    # Find the rows where the data in the 'First' and 'Second' data frames differ
-    df_diff = df_all[df_all['First'] != df_all['Second']]
-
-    # Write the differences to a CSV file
-    df_diff.to_csv('differences.csv')
-
-
-
-
-.......................
-
-# Get the column names
-columns = df1.columns
-
-# Initialize an empty DataFrame to store the differences
-df_diff = pd.DataFrame()
-
-# Compare each column in 'First' and 'Second'
-for col in columns:
-    diff = df_all['First', col] != df_all['Second', col]
-    df_diff = pd.concat([df_diff, df_all[diff]], axis=0)
-
-# Remove duplicate rows
-df_diff = df_diff.drop_duplicates()
-
-# Write the differences to a CSV file
-df_diff.to_csv('differences.csv')
-
-......................
-
-
-if not are_equal:
-    # Create a boolean DataFrame indicating differences
-    df_diff = df1.ne(df2)
-
-    # Print the contents of df_diff
-    print("df_diff:")
-    print(df_diff)
-
-    # Filter the rows where there is at least one difference
-    any_diff = df_diff.any(axis=1)
-    df_diff_filtered = pd.concat([df1[any_diff], df2[any_diff]], axis='columns', keys=['First', 'Second'])
-
-    # Print the contents of df_diff_filtered
-    print("df_diff_filtered:")
-    print(df_diff_filtered)
-
-    # Write the differences to a CSV file
-    df_diff_filtered.to_csv('differences.csv', index=False)
-else:
-    print("No differences found.")
-    df_diff.to_csv('differences.csv', index=False)
-else:
-    print("No differences found.")
-
-..........................................
-
-# If the DataFrames are not equal, find the differences
-if not are_equal:
-    # Create a boolean DataFrame indicating differences
-    df_diff = df1.ne(df2)
-
-    # Compare None values in corresponding columns
-    none_comparison = (df1.isnull()) & (df2.isnull())
-
-    # Exclude rows where both have None in corresponding columns
-    df_diff = df_diff[~none_comparison]
-
-    # Filter the rows where there is at least one difference
-    any_diff = df_diff.any(axis=1)
-    df_diff_filtered = pd.concat([df1[any_diff], df2[any_diff]], axis='columns', keys=['First', 'Second'])
-
-    # Write the differences to a CSV file
-    df_diff_filtered.to_csv('differences.csv', index=False)
-else:
-    print("No differences found.")
+# Print the differences dataframe
+print("\nDifferences:\n", df_diff_sorted)
