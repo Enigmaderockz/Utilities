@@ -76,3 +76,8 @@ if num_records_with_diff > 0:
 
 # Print the differences dataframe
 print("\nDifferences:\n", df_diff_sorted)
+
+rows_with_s = df2[df2.apply(lambda row: 's' in row.values, axis=1)]
+
+print("Rows with 's':")
+print(rows_with_s)
