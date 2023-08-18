@@ -10,9 +10,9 @@ data1 = {
 
 data2 = {
     'A': [1, 's', '0.8', 9, 10],
-    'B': [10, 20, 30, 40, 50],
-    'C': [100, 200, 300, 400, 500],
-    'D': [1000, 2000, 3000, 4000, 5000],
+    'B': [10, 20, 300, 40, 50],
+    'C': [100, 200, '', 400, 500],
+    'D': [1000, 2000, 3000, 400, 5000],
     'E': [10000, 20000, 30000, 40000, 50000]
 }
 
@@ -20,9 +20,6 @@ df1 = pd.DataFrame(data1)
 print(df1)
 df2 = pd.DataFrame(data2)
 print(df2)
-
-
-
 
 # Set the chunk size for processing
 chunksize = 1000  # Adjust this based on your memory limitations
@@ -54,13 +51,6 @@ for chunk_idx in range(num_chunks):
     # Get the common columns dynamically
     common_columns = chunk1.columns.intersection(chunk2.columns)
 
-    # Reorder the columns with 'Files' and 'Row#' first, followed by common columns
-    reordered_columns = ['Files', 'Row#'] + common_columns.difference(['Files', 'Row#']).tolist()
-
-    # Reorder the chunks' columns
-    chunk1 = chunk1[reordered_columns]
-    chunk2 = chunk2[reordered_columns]
-
     # Exclude 'Row#' and 'Files' columns for comparison
     columns_to_compare = common_columns.difference(['Row#', 'Files'])
 
@@ -75,6 +65,11 @@ for chunk_idx in range(num_chunks):
 
     # Filter the rows where there is at least one difference
     any_diff = chunk_diff.any(axis=1)
+
+    # Add a column that lists the columns with differences for each row
+    chunk1['Columnsss'] = chunk_diff.apply(lambda row: '|'.join(row.index[row]), axis=1)
+    chunk2['Columnsss'] = chunk_diff.apply(lambda row: '|'.join(row.index[row]), axis=1)
+
     chunk_diff_filtered = pd.concat([chunk1[any_diff], chunk2[any_diff]], ignore_index=True)
 
     # Add the chunk's differences to the list
@@ -89,6 +84,9 @@ df_diff_sorted = df_diff_sorted.sort_values(by='Row#')
 # Reset the index before writing to CSV
 df_diff_sorted = df_diff_sorted.reset_index(drop=True)
 
+# Reorder the columns in the final dataframe
+df_diff_sorted = df_diff_sorted[['Files', 'Row#', 'Columnsss'] + columns_to_compare.tolist()]
+
 # Write the sorted differences to a CSV file
 df_diff_sorted.to_csv('differences.csv', index=False)
 
@@ -98,8 +96,9 @@ print(f"Number of records with differences: {num_records_with_diff}")
 
 if num_records_with_diff > 0:
     # List columns with differences (excluding 'Files' and 'Row#' columns)
-    different_columns = df_diff_sorted.columns[df_diff_sorted.columns.isin(columns_to_compare)]
-    different_columns = different_columns.difference(['Files', 'Row#'])
+    different_columns = chunk_diff.columns[chunk_diff.any()]
+    different_columns = different_columns.difference(['Files'])
+
     print("Columns with differences:", ', '.join(different_columns))
 
     # Print the differences dataframe
