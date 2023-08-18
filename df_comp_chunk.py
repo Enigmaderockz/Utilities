@@ -105,3 +105,16 @@ if num_records_with_diff > 0:
     print("\nDifferences:\n", df_diff_sorted)
 else:
     print("no diff")
+
+# printing the records from csv file
+
+import itertools
+
+# Specify the path to your CSV file
+csv_file_path = 'your_file.csv'
+
+# Open the CSV file
+with open(csv_file_path, 'r') as f:
+    # Use itertools.islice to get the first 11 lines
+    for line in itertools.islice(f, 11):
+        print(line, end='')
