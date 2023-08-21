@@ -161,4 +161,12 @@ num_lines = sum(1 for line in open('a.csv'))
 print(num_lines)
 
 
+import re
+
+get_processed_value = lambda s: re.sub(r'^.*\/(.+)_\d{8}\.txt$', lambda match: match.group(1).lower(), s)
+
+input_string = "/sfsf/sgs/gs/gs/gs/hd/shd/hd/hdh/ABC_DEf_mehan_sfsf_fsfs_rwrw_wrwr_20230456.txt"
+result = get_processed_value(input_string)
+print(result)
+
 
