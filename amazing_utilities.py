@@ -146,6 +146,38 @@ print("OUTPUT_FILE:", output_file)
         for row in data:
             csv_file.write(custom_delimiter.join(map(str, row)) + "\n")
 
+#better way
+
+import teradatasql
+
+def execute_macro_and_return_csv(connection_string, macro_date, csv_file_path):
+    # Connect to Teradata
+    con = teradatasql.connect(connection_string)
+
+    # Create a cursor
+    cursor = con.cursor()
+
+    # Execute the macro
+    cursor.execute(f"EXEC MACRO('{macro_date}')")
+
+    # Fetch the data
+    data = cursor.fetchall()
+
+    # Define a custom delimiter that is unlikely to appear in your data
+    custom_delimiter = "|"
+
+    # Prepare the data to be written to the CSV file
+    data_to_write = [custom_delimiter.join(map(str, row)) + "\n" for row in data]
+
+    # Write the data to the CSV file
+    with open(csv_file_path, 'w', newline='', encoding='utf-8') as csv_file:
+        csv_file.writelines(data_to_write)
+
+    # Close the cursor and connection
+    cursor.close()
+    con.close()
+
+    return csv_file_path
 
 
 
