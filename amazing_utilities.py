@@ -139,3 +139,13 @@ print("OUTPUT_FILE:", output_file)
 
 
 
+#
+
+# Write the data to the CSV file
+    with open(csv_file_path, 'w', newline='', encoding='utf-8') as csv_file:
+        for row in data:
+            csv_file.write(custom_delimiter.join(map(str, row)) + "\n")
+
+
+
+
