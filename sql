@@ -168,16 +168,8 @@ get_processed_value = lambda s: re.sub(r'^.*\/(.+)_\d{8}\.txt$', lambda match: m
 input_string = "/sfsf/sgs/gs/gs/gs/hd/shd/hd/hdh/ABC_DEf_mehan_sfsf_fsfs_rwrw_wrwr_20230456.txt"
 result = get_processed_value(input_string)
 
-  try:
-    df = pd.read_csv(file_path)
-except pd.errors.ParserError as e:
-    # Print the error message along with the problematic line
-    print("Error:", e)
-    with open(file_path, 'r') as file:
-        lines = file.readlines()
-        error_line_number = int(str(e).split()[-2])  # Extract the line number from the error message
-        error_line = lines[error_line_number - 1]  # Lists are 0-indexed
-        print("Problematic line:", error_line.strip())
-print(result)
-
+  with open(file_path, 'r') as file:
+    for line_number, line in enumerate(file, start=1):
+        delimiter_count = line.count('|')
+        print(f"{line_number} line: {delimiter_count} count")
 
