@@ -173,3 +173,7 @@ result = get_processed_value(input_string)
         delimiter_count = line.count('|')
         print(f"{line_number} line: {delimiter_count} count")
 
+  SELECT column_name
+FROM table_name
+WHERE REGEXP_SIMILAR(column_name, '[A-Za-z]', 'i') = 1;
+
