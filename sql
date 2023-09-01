@@ -242,5 +242,51 @@ html = """
 data = extract_data_from_html(html)
 print("Build no:", data['Build no'])
 print("Build url:", data['Build url'])
+
+
+
+  
+
+
+
+  def extract_data_from_html_file(file_path):
+    try:
+        with open(file_path, 'r') as file:
+            html_content = file.read()
+
+            # Check for the presence of '<td>build no</td>' and extract the data
+            if '<td>build no</td>' in html_content:
+                build_no_start = html_content.find('<td>build no</td>') + len('<td>build no</td>')
+                build_no_end = html_content.find('</td>', build_no_start)
+                build_no = html_content[build_no_start:build_no_end].strip()
+            else:
+                build_no = None
+
+            # Check for the presence of '<td>url</td>' and extract the data
+            if '<td>url</td>' in html_content:
+                url_start = html_content.find('<td>url</td>') + len('<td>url</td>')
+                url_end = html_content.find('</td>', url_start)
+                build_url = html_content[url_start:url_end].strip()
+            else:
+                build_url = None
+
+            return {
+                'Build no': build_no,
+                'Build url': build_url
+            }
+
+    except FileNotFoundError:
+        return None
+
+# Example usage:
+file_path = 'path/to/your/html/file.html'
+data = extract_data_from_html_file(file_path)
+
+if data:
+    print("Build no:", data['Build no'])
+    print("Build url:", data['Build url'])
+else:
+    print("HTML file not found.")
+
   
 
