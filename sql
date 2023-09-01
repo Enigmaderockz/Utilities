@@ -204,6 +204,41 @@ html = """
 </tr>
 """
 
+
+data = extract_data_from_html(html)
+print("Build no:", data['Build no'])
+print("Build url:", data['Build url'])
+
+
+from bs4 import BeautifulSoup
+
+def extract_data_from_html(html):
+    # Parse the HTML using BeautifulSoup
+    soup = BeautifulSoup(html, 'html.parser')
+
+    # Find all <td> elements
+    td_elements = soup.find_all('td')
+
+    build_no = None
+    build_url = None
+
+    # Iterate through the <td> elements to find the desired data
+    for i in range(len(td_elements)):
+        if td_elements[i].text.strip() == 'build no':
+            build_no = td_elements[i + 1].text.strip() if i + 1 < len(td_elements) else None
+        elif td_elements[i].text.strip() == 'url':
+            build_url = td_elements[i + 1].text.strip() if i + 1 < len(td_elements) else None
+
+    return {
+        'Build no': build_no,
+        'Build url': build_url
+    }
+
+# Example usage:
+html = """
+<!-- ... Your HTML content here ... -->
+"""
+
 data = extract_data_from_html(html)
 print("Build no:", data['Build no'])
 print("Build url:", data['Build url'])
