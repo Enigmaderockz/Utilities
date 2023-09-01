@@ -177,3 +177,35 @@ result = get_processed_value(input_string)
 FROM table_name
 WHERE REGEXP_SIMILAR(column_name, '[A-Za-z]', 'i') = 1;
 
+  from bs4 import BeautifulSoup
+
+def extract_data_from_html(html):
+    # Parse the HTML using BeautifulSoup
+    soup = BeautifulSoup(html, 'html.parser')
+
+    # Find the 'td' elements with the specified text and extract the data
+    build_no = soup.find('td', text='build no').find_next('td').text.strip()
+    build_url = soup.find('td', text='url').find_next('td').text.strip()
+
+    return {
+        'Build no': build_no,
+        'Build url': build_url
+    }
+
+# Example usage:
+html = """
+<tr>
+<td>build no</td>
+<td>6464747</td>
+</tr>
+<tr>
+<td>url</td>
+<td>abc.com</td>
+</tr>
+"""
+
+data = extract_data_from_html(html)
+print("Build no:", data['Build no'])
+print("Build url:", data['Build url'])
+  
+
