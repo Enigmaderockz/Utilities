@@ -288,5 +288,43 @@ if data:
 else:
     print("HTML file not found.")
 
+
+
+
+
+
+
+  import re
+
+def extract_data_from_html_file(file_path):
+    try:
+        with open(file_path, 'r') as file:
+            html_content = file.read()
+
+            # Use regular expressions to extract the data between <td> and </td> tags
+            build_no_match = re.search(r'<td>build no<\/td>\s*<td>(.*?)<\/td>', html_content)
+            build_url_match = re.search(r'<td>url<\/td>\s*<td>(.*?)<\/td>', html_content)
+
+            build_no = build_no_match.group(1).strip() if build_no_match else None
+            build_url = build_url_match.group(1).strip() if build_url_match else None
+
+            return {
+                'Build no': build_no,
+                'Build url': build_url
+            }
+
+    except FileNotFoundError:
+        return None
+
+# Example usage:
+file_path = 'path/to/your/html/file.html'
+data = extract_data_from_html_file(file_path)
+
+if data:
+    print("Build no:", data['Build no'])
+    print("Build url:", data['Build url'])
+else:
+    print("HTML file not found.")
+
   
 
