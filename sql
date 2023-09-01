@@ -179,152 +179,29 @@ WHERE REGEXP_SIMILAR(column_name, '[A-Za-z]', 'i') = 1;
 
   from bs4 import BeautifulSoup
 
-def extract_data_from_html(html):
-    # Parse the HTML using BeautifulSoup
-    soup = BeautifulSoup(html, 'html.parser')
+# Input string
+input_string = "1 tests ran in 2 seconds"  # Input with "test" instead of "tests"
 
-    # Find the 'td' elements with the specified text and extract the data
-    build_no = soup.find('td', text='build no').find_next('td').text.strip()
-    build_url = soup.find('td', text='url').find_next('td').text.strip()
+# Split the input string by spaces
+parts = input_string.split()
 
-    return {
-        'Build no': build_no,
-        'Build url': build_url
-    }
-
-# Example usage:
-html = """
-<tr>
-<td>build no</td>
-<td>6464747</td>
-</tr>
-<tr>
-<td>url</td>
-<td>abc.com</td>
-</tr>
-"""
-
-
-data = extract_data_from_html(html)
-print("Build no:", data['Build no'])
-print("Build url:", data['Build url'])
-
-
-from bs4 import BeautifulSoup
-
-def extract_data_from_html(html):
-    # Parse the HTML using BeautifulSoup
-    soup = BeautifulSoup(html, 'html.parser')
-
-    # Find all <td> elements
-    td_elements = soup.find_all('td')
-
-    build_no = None
-    build_url = None
-
-    # Iterate through the <td> elements to find the desired data
-    for i in range(len(td_elements)):
-        if td_elements[i].text.strip() == 'build no':
-            build_no = td_elements[i + 1].text.strip() if i + 1 < len(td_elements) else None
-        elif td_elements[i].text.strip() == 'url':
-            build_url = td_elements[i + 1].text.strip() if i + 1 < len(td_elements) else None
-
-    return {
-        'Build no': build_no,
-        'Build url': build_url
-    }
-
-# Example usage:
-html = """
-<!-- ... Your HTML content here ... -->
-"""
-
-data = extract_data_from_html(html)
-print("Build no:", data['Build no'])
-print("Build url:", data['Build url'])
-
-
-
-  
-
-
-
-  def extract_data_from_html_file(file_path):
-    try:
-        with open(file_path, 'r') as file:
-            html_content = file.read()
-
-            # Check for the presence of '<td>build no</td>' and extract the data
-            if '<td>build no</td>' in html_content:
-                build_no_start = html_content.find('<td>build no</td>') + len('<td>build no</td>')
-                build_no_end = html_content.find('</td>', build_no_start)
-                build_no = html_content[build_no_start:build_no_end].strip()
-            else:
-                build_no = None
-
-            # Check for the presence of '<td>url</td>' and extract the data
-            if '<td>url</td>' in html_content:
-                url_start = html_content.find('<td>url</td>') + len('<td>url</td>')
-                url_end = html_content.find('</td>', url_start)
-                build_url = html_content[url_start:url_end].strip()
-            else:
-                build_url = None
-
-            return {
-                'Build no': build_no,
-                'Build url': build_url
-            }
-
-    except FileNotFoundError:
-        return None
-
-# Example usage:
-file_path = 'path/to/your/html/file.html'
-data = extract_data_from_html_file(file_path)
-
-if data:
-    print("Build no:", data['Build no'])
-    print("Build url:", data['Build url'])
+# Check if the split parts contain "tests" or "test" and "seconds"
+if "tests" in parts:
+    index = parts.index("tests")
+elif "test" in parts:
+    index = parts.index("test")
 else:
-    print("HTML file not found.")
+    print("Input string format doesn't match the expected pattern.")
+    exit()
 
+# Extract the number of tests and seconds
+num_tests = float(parts[index - 1])
+seconds = float(parts[index + 3])
 
+# Convert seconds to minutes
+minutes = seconds / 60.0
 
+# Create the output string with the updated values
+output_string = f"{int(num_tests)} tests ran in {minutes:.2f} minutes"
 
-
-
-
-  import re
-
-def extract_data_from_html_file(file_path):
-    try:
-        with open(file_path, 'r') as file:
-            html_content = file.read()
-
-            # Use regular expressions to extract the data between <td> and </td> tags
-            build_no_match = re.search(r'<td>build no<\/td>\s*<td>(.*?)<\/td>', html_content)
-            build_url_match = re.search(r'<td>url<\/td>\s*<td>(.*?)<\/td>', html_content)
-
-            build_no = build_no_match.group(1).strip() if build_no_match else None
-            build_url = build_url_match.group(1).strip() if build_url_match else None
-
-            return {
-                'Build no': build_no,
-                'Build url': build_url
-            }
-
-    except FileNotFoundError:
-        return None
-
-# Example usage:
-file_path = 'path/to/your/html/file.html'
-data = extract_data_from_html_file(file_path)
-
-if data:
-    print("Build no:", data['Build no'])
-    print("Build url:", data['Build url'])
-else:
-    print("HTML file not found.")
-
-  
-
+print(output_string)
