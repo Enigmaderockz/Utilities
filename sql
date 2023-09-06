@@ -177,31 +177,56 @@ result = get_processed_value(input_string)
 FROM table_name
 WHERE REGEXP_SIMILAR(column_name, '[A-Za-z]', 'i') = 1;
 
-  from bs4 import BeautifulSoup
+import requests
+import json
 
-# Input string
-input_string = "1 tests ran in 2 seconds"  # Input with "test" instead of "tests"
+# Set the TeamCity server URL and the build ID
+teamcity_server_url = "https://teamcity.example.com"
+build_id = 12345
 
-# Split the input string by spaces
-parts = input_string.split()
+# Create a request object and set the headers and the URL
+request = requests.get(
+    url=f"{teamcity_server_url}/app/rest/builds?locator=id:{build_id}",
+    headers={"Accept": "application/json"},
+)
 
-# Check if the split parts contain "tests" or "test" and "seconds"
-if "tests" in parts:
-    index = parts.index("tests")
-elif "test" in parts:
-    index = parts.index("test")
-else:
-    print("Input string format doesn't match the expected pattern.")
-    exit()
+# Send the request and get the response
+response = request.json()
 
-# Extract the number of tests and seconds
-num_tests = float(parts[index - 1])
-seconds = float(parts[index + 3])
+# Parse the response JSON and get the duration of the build
+duration = response["build"]["duration"]
 
-# Convert seconds to minutes
-minutes = seconds / 60.0
+# Print the duration of the build
+print(duration)
 
-# Create the output string with the updated values
+
 output_string = f"{int(num_tests)} tests ran in {minutes:.2f} minutes"
 
 print(output_string)
+
+  # chatgpt
+
+  import requests
+
+# Define your TeamCity server URL and build ID
+teamcity_url = "https://your-teamcity-server-url"
+build_id = "12345"  # Replace with the actual build ID
+
+# Set your username and password for authentication
+username = "your_username"
+password = "your_password"
+
+# Create a session with authentication
+session = requests.Session()
+session.auth = (username, password)
+
+# Make the API request to get build details
+response = session.get(f"{teamcity_url}/httpAuth/app/rest/builds/{build_id}")
+
+if response.status_code == 200:
+    build_data = response.json()
+    build_duration = build_data['duration']
+    print(f"Build {build_id} duration: {build_duration} seconds")
+else:
+    print(f"Failed to retrieve build details. Status code: {response.status_code}")
+
