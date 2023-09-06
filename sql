@@ -230,3 +230,28 @@ if response.status_code == 200:
 else:
     print(f"Failed to retrieve build details. Status code: {response.status_code}")
 
+
+
+  import requests
+import json
+
+# Set the TeamCity server URL and the build ID
+teamcity_server_url = "https://teamcity.example.com"
+build_id = 12345
+
+# Create a request object and set the headers and the URL
+request = requests.get(
+    url=f"{teamcity_server_url}/app/rest/builds?locator=id:{build_id}",
+    headers={"Accept": "application/json"},
+)
+
+# Send the request and get the response
+response = request.json()
+
+# Parse the response JSON and get the duration of the build
+duration = response["build"]["duration"]
+
+# Print the duration of the build
+print(duration)
+
+
