@@ -254,4 +254,6 @@ duration = response["build"]["duration"]
 # Print the duration of the build
 print(duration)
 
+  find /v/incoming -type f -name "*.gz" -delete 
+
 
