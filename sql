@@ -256,4 +256,24 @@ print(duration)
 
   find /v/incoming -type f -name "*.gz" -delete 
 
+  #!/bin/bash
+
+# Get the start time
+start=$(date +%s)
+
+# Sleep for 30 seconds
+sleep 30
+
+# Get the end time
+end=$(date +%s)
+
+# Calculate the difference in minutes
+diff=$((end - start) / 60)
+
+# Print the execution time
+echo "Execution time took $diff minutes"
+
+# Pass the difference to the Python script
+python filename.py $diff
+
 
