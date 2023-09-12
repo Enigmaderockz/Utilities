@@ -276,8 +276,4 @@ echo "Execution time took $diff minutes"
 # Pass the difference to the Python script
 python filename.py $diff
 
-line_numbers = df[column].isnull().add(pd.NA).index + 2
-if null_values.sum() > 0:
-        print(f'Null values in {column}: {null_values.sum()} at line no {tuple(line_numbers)}')
-    else:
-        print(f'Null values in {column}: 0')
+for filename in *.dat; do echo "$filename $(grep -E '[:special:]' "$filename" | wc -l)"; done
