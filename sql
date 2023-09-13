@@ -277,3 +277,10 @@ echo "Execution time took $diff minutes"
 python filename.py $diff
 
 for filename in *.dat; do echo "$filename $(grep -E '[:special:]' "$filename" | wc -l)"; done
+
+  
+Dear [MD's name],
+
+I am writing to you today to express my sincere gratitude for your leadership and mentorship over the past [number] years. I have learned so much from you, and I am truly grateful for the opportunities you have given me.
+
+I am sad to see you go, but I know that you are leaving for a great opportunity. I wish you all the best in your future endeavors.
