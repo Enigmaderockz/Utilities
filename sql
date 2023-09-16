@@ -279,8 +279,5 @@ python filename.py $diff
 for filename in *.dat; do echo "$filename $(grep -E '[:special:]' "$filename" | wc -l)"; done
 
   
-Dear [MD's name],
+awk -F',' 'NR==1 { for (i=1; i<=NF; i++) if ($i == "ColumnName") col=i } NR>1 { if (!seen[$col]++) print $col }' data.csv
 
-I am writing to you today to express my sincere gratitude for your leadership and mentorship over the past [number] years. I have learned so much from you, and I am truly grateful for the opportunities you have given me.
-
-I am sad to see you go, but I know that you are leaving for a great opportunity. I wish you all the best in your future endeavors.
