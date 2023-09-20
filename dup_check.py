@@ -71,3 +71,5 @@ print(f"Total Rows (including header and footer): {total_rows + 2}")  # Adding 2
 # Footer Value (Last column of the footer): 00003
 # Total Rows (including header and footer): 14
 
+total_rows = sum(1 for _ in open("your_file.csv"))
+
