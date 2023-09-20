@@ -30,3 +30,44 @@ if not duplicates.empty:
         print(f"{duplicate_values} - Occurrences {occurrences}")
 else:
     print(f"No duplicate records found based on columns {', '.join(columns_to_check)}: 0")
+
+
+# footer and header
+
+import csv
+
+file_path = "b_tmp.csv"
+
+# Initialize variables
+header = None
+footer = None
+total_rows = 0
+
+with open(file_path, 'r') as file:
+    # Create a CSV reader with a custom delimiter and quote character
+    csv_reader = csv.reader(file, delimiter='|', quotechar='"')
+
+    # Read the header (first line)
+    header = next(csv_reader)
+
+    # Read the rows and calculate total rows
+    for row in csv_reader:
+        total_rows += 1
+
+        # Store the last row as the footer
+        footer = row
+
+# Extract the values from the header and footer
+header_value = header[2] if len(header) > 2 else None
+footer_value = footer[-1] if footer else None
+
+# Print the results
+print(f"Header Value (3rd column of the header): {header_value}")
+print(f"Footer Value (Last column of the footer): {int(footer_value)}")
+print(f"Total Rows (including header and footer): {total_rows + 2}")  # Adding 2 for header and footer
+
+# Example output:
+# Header Value (3rd column of the header): 2023-0909
+# Footer Value (Last column of the footer): 00003
+# Total Rows (including header and footer): 14
+
