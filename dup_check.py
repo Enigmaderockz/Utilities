@@ -92,6 +92,30 @@ def compare_lists(list1, list2):
 list1 = [45, 65, 73, 54]
 list2 = [45, 65, 73, 54]
 
+
 result = compare_lists(list1, list2)
 print("Result:", result)
+
+
+################################################3
+
+import pandas as pd
+
+# Read the data from a.dat and b.dat into pandas DataFrames
+df_a = pd.read_csv('a.dat')
+df_b = pd.read_csv('b.dat')
+
+# Extract the 'IDN_CUST' column from both DataFrames
+idn_cust_a = set(df_a['IDN_CUST'])
+idn_cust_b = set(df_b['IDN_CUST'])
+
+# Find missing values in a.dat compared to b.dat
+missing_values = idn_cust_a - idn_cust_b
+
+if missing_values:
+    print("Values in a.dat that are missing in b.dat:")
+    for value in missing_values:
+        print(value)
+else:
+    print("No missing values in a.dat compared to b.dat")
 
