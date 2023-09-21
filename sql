@@ -278,6 +278,9 @@ python filename.py $diff
 
 for filename in *.dat; do echo "$filename $(grep -E '[:special:]' "$filename" | wc -l)"; done
 
+  issueFunction in linkedIssuesOf("issueType = TestSet AND key = YOUR_TEST_SET_KEY", "isTestedBy") 
+
+
   
 awk -F',' 'NR==1 { for (i=1; i<=NF; i++) if ($i == "ColumnName") col=i } NR>1 { if (!seen[$col]++) print $col }' data.csv
 
