@@ -71,5 +71,27 @@ print(f"Total Rows (including header and footer): {total_rows + 2}")  # Adding 2
 # Footer Value (Last column of the footer): 00003
 # Total Rows (including header and footer): 14
 
-total_rows = sum(1 for _ in open("your_file.csv"))
+def compare_lists(list1, list2):
+    set1 = set(list1)
+    set2 = set(list2)
+
+    if set1 == set2:
+      print("both the feeds have same loans")
+      return True
+    else:
+        extra_values = set2 - set1
+        missing_values = set1 - set2
+
+        if extra_values:
+            print("List 2 has extra values:", ', '.join(map(str, extra_values)))
+        if missing_values:
+            print("List 1 has missing values:", ', '.join(map(str, missing_values)))
+
+        return False
+
+list1 = [45, 65, 73, 54]
+list2 = [45, 65, 73, 54]
+
+result = compare_lists(list1, list2)
+print("Result:", result)
 
