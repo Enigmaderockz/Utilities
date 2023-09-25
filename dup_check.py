@@ -119,3 +119,35 @@ if missing_values:
 else:
     print("No missing values in a.dat compared to b.dat")
 
+#######################################33333333333
+
+
+import csv
+from collections import defaultdict
+
+def process_value(value):
+    if value == '':
+        return 'null'
+    elif ' ' in value:
+        return 'blank_space'
+    else:
+        return value
+
+def distinct_values_in_columns(filename, delimiter=','):
+    distinct_values = defaultdict(set)
+
+    with open(filename, 'r', newline='', encoding='utf-8') as csvfile:
+        reader = csv.reader(csvfile, delimiter=delimiter)
+        header = next(reader)  # Read the header row
+
+        for row in reader:
+            for col_num, value in enumerate(row):
+                distinct_values[header[col_num]].add(process_value(value))
+
+    for col_name, values in distinct_values.items():
+        distinct_values_str = ', '.join(sorted(values))
+        print(f"Distinct values in {col_name}: {distinct_values_str}")
+
+if __name__ == "__main__":
+    filename = "a.csv"  # Replace with your CSV file path
+    distinct_values_in_columns(filename)
