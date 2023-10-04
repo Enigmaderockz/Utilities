@@ -148,6 +148,58 @@ def distinct_values_in_columns(filename, delimiter=','):
         distinct_values_str = ', '.join(sorted(values))
         print(f"Distinct values in {col_name}: {distinct_values_str}")
 
+##########################33
+
+def calculate_column_sum(filename, column_name):
+    try:
+        # Initialize the sum
+        column_sum = 0.0
+
+        # Open the file for reading
+        with open(filename, 'r') as file:
+            # Read the header row to get column indexes
+            header = next(file)
+            columns = header.strip().split('|')
+
+            # Find the index of the specified column
+            try:
+                column_index = columns.index(column_name)
+            except ValueError:
+                print(f"Column '{column_name}' not found in the file.")
+                return None
+
+            # Read each subsequent line in the file
+            for line in file:
+                # Split the line by the pipe delimiter
+                columns = line.strip().split('|')
+
+                # Get the value in the specified column and convert it to a float (considering null as 0.00)
+                try:
+                    column_value = float(columns[column_index]) if columns[column_index] else 0.00
+                except ValueError:
+                    print(f"Invalid value in column '{column_name}' on line: {line}")
+                    continue
+
+                # Add the value to the sum
+                column_sum += column_value
+
+        # Format the sum to two decimal places
+        formatted_sum = round(column_sum, 2)
+
+        return formatted_sum
+
+    except Exception as e:
+        print(f"An error occurred: {str(e)}")
+        return None
+
+# Example usage:
+filename = "data.dat"
+column_name = "col1"
+result = calculate_column_sum(filename, column_name)
+if result is not None:
+    print(f"Sum of values in '{column_name}' column: {result}")
+
+
 if __name__ == "__main__":
     filename = "a.csv"  # Replace with your CSV file path
     distinct_values_in_columns(filename)
