@@ -199,6 +199,51 @@ result = calculate_column_sum(filename, column_name)
 if result is not None:
     print(f"Sum of values in '{column_name}' column: {result}")
 
+#####################################
+
+import os
+import shutil
+import sys
+
+# Check if the correct number of command-line arguments are provided
+if len(sys.argv) != 2:
+    print("Usage: python copy_files.py <business_date>")
+    sys.exit(1)
+
+# Get the business date from the command-line argument
+business_date = sys.argv[1]
+
+# Define a dictionary mapping keywords to destination paths
+keyword_paths = {
+    "CREDIT_PSL": "/abc/var/tmp/credit",
+    "RGBDW_RWMS": "/abc/var/tmp/rwms",
+    "PSL_FTP": "/abc/var/tmp/ftp",
+    "PSL_FDW": "/abc/var/tmp/fdw",
+    "WM_PSL_CLTENT_REF": "/abc/var/tmp/fdw",
+    "PSL_LTIQUIDITY_RISK": "/abc/var/tmp/liq",
+}
+
+# Define the directory containing the files
+directory = "/var/tmp/col"
+
+# Iterate over files in the directory
+for filename in os.listdir(directory):
+    # Check if the file starts with any of the keywords
+    for keyword, destination_path in keyword_paths.items():
+        if filename.startswith(keyword) and business_date in filename:
+            # Construct the source and destination paths
+            source_path = os.path.join(directory, filename)
+            destination_path = os.path.join(destination_path, filename)
+
+            # Copy the file to the destination
+            shutil.copy(source_path, destination_path)
+
+            # Print a message indicating the file was copied
+            print(f"File {filename} copied to {destination_path}")
+
+print("Copy operation completed.")
+
+
 
 if __name__ == "__main__":
     filename = "a.csv"  # Replace with your CSV file path
