@@ -285,9 +285,3 @@ for filename in *.dat; do echo "$filename $(grep -E '[:special:]' "$filename" | 
 awk -F',' 'NR==1 { for (i=1; i<=NF; i++) if ($i == "ColumnName") col=i } NR>1 { if (!seen[$col]++) print $col }' data.csv
 
 
-[Colleague's Name] has consistently demonstrated a high level of dependability in their work. They meet deadlines consistently and are someone I can rely on to complete tasks efficiently.
-
-Moreover, [Colleague's Name] has been highly useful to the team. They bring valuable insights, creativity, and problem-solving skills to our projects. Their contributions have significantly enhanced the quality of our work.
-
-However, there is always room for improvement, and I believe that [Colleague's Name] could further enhance their contributions by [mention specific areas for improvement, if applicable, such as communication, collaboration, or specific skills development].
-
