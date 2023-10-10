@@ -284,4 +284,13 @@ for filename in *.dat; do echo "$filename $(grep -E '[:special:]' "$filename" | 
   
 awk -F',' 'NR==1 { for (i=1; i<=NF; i++) if ($i == "ColumnName") col=i } NR>1 { if (!seen[$col]++) print $col }' data.csv
 
+import re
+
+text = "careFlag scenaFlag adh ajdadj adadjj safaFlag"
+pattern = r'\w+Flag'
+matches = re.findall(pattern, text)
+
+for match in matches:
+    print(match)
+
 
