@@ -249,3 +249,46 @@ if __name__ == "__main__":
     filename = "a.csv"  # Replace with your CSV file path
     distinct_values_in_columns(filename)
 
+########################################33
+
+
+import csv
+from collections import defaultdict
+
+# Define the keywords
+keywords = ['45678901234', '9876543210', '43210987654']
+
+# Initialize a dictionary to store distinct values for each column
+distinct_values = defaultdict(set)
+
+# Open and read the input file
+with open('your_file.csv', 'r') as csv_file:
+    reader = csv.DictReader(csv_file, delimiter='|')
+
+    # Initialize a list to store the filtered rows
+    filtered_rows = []
+
+    for row in reader:
+        for keyword in keywords:
+            if any(keyword in value for value in row.values()):
+                filtered_rows.append(row)
+                for col, value in row.items():
+                    if isinstance(value, list):
+                        value = ','.join(value)  # Convert list to a string
+                    distinct_values[col].add(value if value else 'null')
+
+# Print the header
+header = '|'.join(reader.fieldnames)
+print(header)
+
+# Print the filtered rows
+for row in filtered_rows:
+    row_values = '|'.join(row[field] for field in reader.fieldnames)
+    print(row_values)
+
+# Print distinct values for each column
+for col, values in distinct_values.items():
+    values_str = ','.join(values)
+    print(f"{col} = {values_str}")
+
+
