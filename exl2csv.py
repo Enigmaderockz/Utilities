@@ -14,3 +14,5 @@ csv_file_path = 'orig.csv'
 excel_to_pipe_delimited_csv(excel_file_path, csv_file_path)
 
 grep "[^[:alnum:]._-]" "filename.txt"
+
+grep -P "[^\p{ASCII}]"
