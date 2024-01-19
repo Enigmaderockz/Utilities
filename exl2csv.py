@@ -12,3 +12,5 @@ excel_file_path = 'orig.xlsx'
 csv_file_path = 'orig.csv'
 
 excel_to_pipe_delimited_csv(excel_file_path, csv_file_path)
+
+echo 'your_file_name' | grep -E '[^a-zA-Z0-9_\.-]'
