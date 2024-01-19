@@ -13,4 +13,4 @@ csv_file_path = 'orig.csv'
 
 excel_to_pipe_delimited_csv(excel_file_path, csv_file_path)
 
-grep -q "[^[:alnum:]._-]" "filename.txt" && echo "Filename contains special characters."
+grep "[^[:alnum:]._-]" "filename.txt"
