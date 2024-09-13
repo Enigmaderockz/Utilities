@@ -1,3 +1,13 @@
+from pyspark.sql import functions as F
+
+# Filter the DataFrame where column 'c' is between 2020 and 2024
+filtered_df = df.filter((F.year(df['c']) > 2020) & (F.year(df['c']) < 2024))
+
+# Show the filtered results
+filtered_df.show()
+
+
+
 Our newly launched PSL Loans cater specifically to private company employees. These loans allow individuals to leverage their vested common stock. Key eligibility criteria include:
 Cumulative Vested Common Shares: Applicants must possess vested common shares valued at over $500,000.
 US Residency: Loans are available exclusively to US residents.
