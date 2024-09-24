@@ -59,28 +59,32 @@ print_result()
 
 import json
 import glob
+import os
 
-def combine_cucumber_jsons(input_files, output_file):
+def combine_cucumber_jsons(input_directory, output_file):
     combined_data = []
 
-    for file in input_files:
+    # Find all JSON files in the specified directory
+    json_files = glob.glob(os.path.join(input_directory, "*.json"))
+
+    # Loop through each file and merge the data
+    for file in json_files:
         with open(file, 'r') as f:
             data = json.load(f)
-            combined_data.extend(data)  # Append the data (features) from each JSON file
+            combined_data.extend(data)  # Append data from each file to the combined data
 
     # Write the combined data to the output file
     with open(output_file, 'w') as outfile:
         json.dump(combined_data, outfile, indent=4)
 
 if __name__ == "__main__":
-    # List of JSON files to combine
-    input_files = glob.glob("*.json")  # You can modify this to your file list or use glob to find them
+    # Directory containing JSON files
+    input_directory = "/cool/margin/reports"
 
-    # Output JSON file
+    # Output JSON file path
     output_file = "combined_cucumber_report.json"
 
     # Combine the JSON files
-    combine_cucumber_jsons(input_files, output_file)
+    combine_cucumber_jsons(input_directory, output_file)
 
     print(f"Combined JSON saved to {output_file}")
-
