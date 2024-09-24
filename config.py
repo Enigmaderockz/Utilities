@@ -32,3 +32,25 @@ columns_to_mask = {
         "CAL": ("VARCHAR", 45, None),
         "SIN": ("VARCHAR", 5, None),
 }
+
+
+
+import pandas as pd
+
+def compare_empty_dataframes(df1, df2):
+    # Check if both DataFrames are empty and have the same columns
+    return df1.empty and df2.empty and df1.columns.equals(df2.columns)
+
+# Example usage
+df1 = pd.DataFrame(columns=['A', 'B', 'C'])
+df2 = pd.DataFrame(columns=['A', 'B', 'C'])
+
+result = compare_empty_dataframes(df1, df2)
+
+def print_result():
+    if compare_empty_dataframes(df1, df2) == True:
+        print("Both DataFrames are empty and have the same columns.")
+    else:
+        print("DataFrames are not empty or do not have the same columns.")
+
+print_result()
