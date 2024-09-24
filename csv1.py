@@ -16,7 +16,7 @@ ADDRESS_STREET = "800 Highway 400 . STE 240"
 CITY = "Dawsonville"
 STATE = "GA"
 SSN = "454-54-6577"
-NULL_COLUMNS = ["", "", "", ""]
+NULL_COLUMNS = ["", "", "", "", ""]
 DOB_FORMAT = "%Y/%m/%d"
 
 # Thread-safe counter and lock
@@ -34,19 +34,20 @@ def generate_dob():
     random_date = start_date + (end_date - start_date) * random.random()
     return random_date.strftime(DOB_FORMAT)
 
-# Generate random 3-digit customer ID
-def generate_customer_id():
-    return random.randint(100, 999)
+# Generic function to generate a integer number within a specified range
+def generate_numbers_in_range(min_value, max_value):
+    return random.randint(min_value, max_value)
 
 # Generate a record based on the format provided
 def generate_record():
+    number = generate_numbers_in_range(1000, 9999)
     first_name = generate_name()
     last_name = generate_name()
     date_of_birth = generate_dob()
-    customer_id = generate_customer_id()
+    customer_id = generate_numbers_in_range(100, 999)
     
     return [
-        KNOWN_AS_DT, DATA_TYPE, NUMBER, 
+        KNOWN_AS_DT, DATA_TYPE, number, 
         first_name, last_name, TRUST_NAME, 
         date_of_birth, ADDRESS_STREET, CITY, 
         STATE, SSN
