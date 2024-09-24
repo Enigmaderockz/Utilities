@@ -54,3 +54,33 @@ def print_result():
         print("DataFrames are not empty or do not have the same columns.")
 
 print_result()
+
+
+
+import json
+import glob
+
+def combine_cucumber_jsons(input_files, output_file):
+    combined_data = []
+
+    for file in input_files:
+        with open(file, 'r') as f:
+            data = json.load(f)
+            combined_data.extend(data)  # Append the data (features) from each JSON file
+
+    # Write the combined data to the output file
+    with open(output_file, 'w') as outfile:
+        json.dump(combined_data, outfile, indent=4)
+
+if __name__ == "__main__":
+    # List of JSON files to combine
+    input_files = glob.glob("*.json")  # You can modify this to your file list or use glob to find them
+
+    # Output JSON file
+    output_file = "combined_cucumber_report.json"
+
+    # Combine the JSON files
+    combine_cucumber_jsons(input_files, output_file)
+
+    print(f"Combined JSON saved to {output_file}")
+
